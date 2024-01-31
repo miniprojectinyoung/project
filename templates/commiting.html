@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>항해 요리사</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            font-weight: normal;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .wrapper {
+            width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            h1 a {
+                color: #426B1F;
+                font-size: 24px;
+            }
+
+            a[role="button"] {
+                width: 100px;
+                height: 45px;
+                background-color: #426B1F;
+                color: white;
+                border: none;
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        section {
+            margin-bottom: 30px;
+
+            .recipe-header {
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 20px;
+                margin-bottom: 30px;
+                display: flex;
+                align-items: center;
+                gap: 30px;
+
+                input {
+                    width: 200px;
+                    padding: 15px;
+                    border: 1px solid #aaa;
+                    outline: none;
+                }
+            }
+
+            .recipe-contents {
+                display: flex;
+                flex-direction: column;
+                gap: 30px;
+
+                .recipe-card {
+                    width: 100%;
+                    height: 200px;
+                    display: flex;
+                    border-radius: 15px;
+                    overflow: hidden;
+                    border: 1px solid #ddd;
+
+                    img {
+                        width: 30%;
+                    }
+
+                    .recipe-card__inner {
+                        width: 100%;
+                        padding: 20px;
+                        background-color: #FAFAF5;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-around;
+
+                        .recipe-explanation {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: flex-start;
+
+                            h2 {
+                                font-weight: bold;
+                                font-size: 24px;
+                            }
+
+                            input {
+                                width: 200px;
+                                padding: 10px;
+                                border: 1px solid #aaa;
+                                outline: none;
+                            }
+                        }
+
+                        .explanation {
+                            width: 500px;
+                            padding: 10px;
+                            border: 1px solid #aaa;
+                            outline: none;
+                        }
+                    }
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <h1>
+                <a href="/">항해 요리사</a>
+            </h1>
+            <a href="#" role="button" onclick="submitRecipe()">레시피 올리기</a>
+        </header>
+
+        <section>
+            <div class="recipe-header">
+                <input type="text" placeholder="레시피 제목을 입력해주세요" name="title" id="title" required>
+                <input type="text" placeholder="예상 난이도를 입력해주세요" name="difficulty" id="difficulty" required>
+                <input type="password" placeholder="비밀번호를 입력해주세요" name="password" id="password" required>
+            </div>
+
+            <div class="recipe-contents">
+                <div class="recipe-card">
+                    <img src="{{ url_for('static', filename='img/tomato.webp') }}" alt="토마토 이미지">
+                    <div class="recipe-card__inner">
+                        <div class="recipe-explanation">
+                            <h2>요리 설명</h2>
+                            <input type="text" name="cookingMinutes" id="cookingMinutes" placeholder="예상 조리 시간 (단위: 분)"
+                                required>
+                        </div>
+                        <input type="text" class="explanation" name="cookingExplanation" id="cookingExplanation"
+                            placeholder="요리 설명을 작성해주세요" required>
+                    </div>
+                </div>
+
+                <div class="recipe-card">
+                    <img src="{{ url_for('static', filename='img/peanut.jpeg') }}" alt="땅콩 이미지">
+                    <div class="recipe-card__inner">
+                        <div class="recipe-explanation">
+                            <h2>재료 설명</h2>
+                            <input type="text" name="ingredientPrice" id="ingredientPrice"
+                                placeholder="예상 재료 비용 (단위: 원)" required>
+                        </div>
+                        <input type="text" class="explanation" name="ingredientExplanation" id="ingredientExplanation"
+                            placeholder="재료 설명을 작성해주세요" required>
+                    </div>
+                </div>
+
+                <div class="recipe-card">
+                    <img src="{{ url_for('static', filename='img/onion.webp') }}" alt="양파 이미지">
+                    <div class="recipe-card__inner">
+                        <div class="recipe-explanation">
+                            <h2>레시피</h2>
+                            <input type="text" name="caution" id="caution" placeholder="조리시 주의사항을 적어주세요." required>
+                        </div>
+                        <input type="file" class="explanation" name="recipeImage" id="recipeImage">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        async function createRecipe(data) {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/recipes', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                console.log(result);
+
+                alert('레시피가 정상적으로 올라갔습니다!');
+                window.location.href = '/';
+            } catch (error) {
+                throw new Error(error);
+            }
+        }
+
+        function submitRecipe() {
+            // 클릭 무효화
+            event.preventDefault();
+
+            // 입력 값 확인
+            const title = document.getElementById('title').value;
+            if (!title) {
+                alert('레시피 제목을 입력해주세요.')
+                return
+            }
+
+            const difficulty = document.getElementById('difficulty').value;
+            if (!difficulty || isNaN(difficulty)) {
+                alert('올바른 난이도 숫자를 입력해주세요.');
+                return;
+            }
+
+            const password = document.getElementById('password').value;
+            if (!password) {
+                alert('비밀번호를 입력해주세요.')
+                return
+            }
+
+            const cookingMinutes = document.getElementById('cookingMinutes').value;
+            if (!cookingMinutes || isNaN(cookingMinutes)) {
+                alert('올바른 예상 조리 시간(분)을 입력해주세요.')
+                return
+            }
+
+            const cookingExplanation = document.getElementById('cookingExplanation').value;
+            if (!cookingExplanation) {
+                alert('요리 설명을 입력해주세요.')
+                return
+            }
+
+            const ingredientPrice = document.getElementById('ingredientPrice').value;
+            if (!ingredientPrice || isNaN(ingredientPrice)) {
+                alert('올바른 예상 재료 비용(원)을 입력해주세요.')
+                return
+            }
+
+            const ingredientExplanation = document.getElementById('ingredientExplanation').value;
+            if (!ingredientExplanation) {
+                alert('재료 설명을 입력해주세요.')
+                return
+            }
+
+            const caution = document.getElementById('caution').value;
+            if (!caution) {
+                alert('조리시 주의사항을 입력해주세요.')
+                return
+            }
+
+            // 서버로 보낼 객체 생성
+            const data = {
+                title: title,
+                difficulty: difficulty,
+                password: password,
+                cookingMinutes: cookingMinutes,
+                cookingExplanation: cookingExplanation,
+                ingredientPrice: ingredientPrice,
+                ingredientExplanation: ingredientExplanation,
+                caution: caution
+            };
+
+            createRecipe(data);
+        }
+    </script>
+</body>
+
+</html>

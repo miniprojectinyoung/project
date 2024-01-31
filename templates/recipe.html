@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>항해 요리사</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            font-weight: normal;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .wrapper {
+            width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            h1 a {
+                color: #426B1F;
+                font-size: 24px;
+            }
+
+            .btn-box {
+                display: flex;
+                gap: 10px;
+
+                a[role="button"] {
+                    width: 100px;
+                    height: 45px;
+                    background-color: #426B1F;
+                    color: white;
+                    border: none;
+
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+        }
+
+        section {
+            margin-bottom: 30px;
+
+            .recipe-header {
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 20px;
+                margin-bottom: 30px;
+                display: flex;
+                align-items: baseline;
+                gap: 30px;
+
+                h2 {
+                    font-size: 24px;
+                }
+            }
+
+            .recipe-contents {
+                margin-bottom: 30px;
+                display: flex;
+                flex-direction: column;
+                gap: 30px;
+
+                .recipe-card {
+                    width: 100%;
+                    height: 200px;
+                    display: flex;
+                    border-radius: 15px;
+                    overflow: hidden;
+                    border: 1px solid #ddd;
+
+                    img {
+                        width: 30%;
+                    }
+
+                    .recipe-card__inner {
+                        width: 100%;
+                        padding: 20px;
+                        background-color: #FAFAF5;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-around;
+
+                        .recipe-explanation {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: flex-start;
+
+                            h2 {
+                                font-weight: bold;
+                                font-size: 24px;
+                                margin-bottom: 5px;
+                            }
+
+                            .sub {
+                                font-weight: bold;
+                                font-size: 18px;
+                                color: #426B1F;
+                            }
+
+                            .cookingMinutes {
+                                font-weight: bold;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .btn {
+                display: block;
+                width: 100%;
+                background-color: #426B1F;
+                color: white;
+                text-align: center;
+                padding: 10px 0;
+                border-radius: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <h1>
+                <a href="/">항해 요리사</a>
+            </h1>
+            <div class="btn-box">
+                <a href="#" role="button" onclick="editRecipe({{ data.id }})">수정</a>
+                <a href="#" role="button" onclick="clickDeleteRecipe({{ data.id }})">삭제</a>
+            </div>
+        </header>
+
+        <section>
+            <div class="recipe-header">
+                <h2>{{ data.title }}</h2>
+                <p>예상 난이도: {{ data.difficulty }}</p>
+            </div>
+
+            <div class="recipe-contents">
+                <div class="recipe-card">
+                    <img src="{{ url_for('static', filename='img/tomato.webp') }}" alt="토마토 이미지">
+                    <div class="recipe-card__inner">
+                        <div class="recipe-explanation">
+                            <div>
+                                <h2>요리 설명</h2>
+                                <p class="sub">{{ data.cooking_explanation }}</p>
+                            </div>
+                            <p class="cookingMinutes">예상 조리 시간: {{ data.cooking_minutes }}분</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recipe-card">
+                    <img src="{{ url_for('static', filename='img/peanut.jpeg') }}" alt="땅콩 이미지">
+                    <div class="recipe-card__inner">
+                        <div class="recipe-explanation">
+                            <div>
+                                <h2>재료</h2>
+                                <p class="sub">{{ data.ingredient_explanation }}</p>
+                            </div>
+                            <p class="cookingMinutes">예상 재료 구입 비용: {{ data.ingredient_price }}원</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recipe-card">
+                    <img src="{{ url_for('static', filename='img/onion.webp') }}" alt="양파 이미지">
+                    <div class="recipe-card__inner">
+                        <div class="recipe-explanation">
+                            <div>
+                                <h2>레시피</h2>
+                                <p class="sub">사진 영역</p>
+                            </div>
+                            <p class="cookingMinutes">{{ data.caution }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" role="button" class="btn" onclick="clickLike({{ data.id }})">좋아요 {{ data.likes }}</a>
+        </section>
+    </div>
+
+    <script>
+        // 삭제
+        function clickDeleteRecipe(id) {
+            const password = prompt('비밀번호를 입력해주세요.');
+
+            deleteRecipe(id, password);
+        }
+
+        async function deleteRecipe(id, password) {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/api/recipes/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(
+                        { 'password': password }
+                    )
+                });
+
+                const result = await response.json();
+                if (result.success === false) {
+                    alert('비밀번호가 일치하지 않습니다.');
+                    return;
+                }
+
+                alert('레시피가 정상적으로 삭제됐습니다!');
+                window.location.href = '/';
+            } catch (error) {
+                throw new Error(error);
+            }
+        }
+
+        // 좋아요
+        async function clickLike(id) {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/api/recipes/${id}/likes`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                });
+
+                const result = await response.json();
+                console.log(result);
+
+                alert('레시피에 좋아요를 누르셨습니다!');
+                location.reload();
+            } catch (error) {
+                throw new Error(error);
+            }
+        }
+    </script>
+</body>
+
+</html>
