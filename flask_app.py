@@ -70,9 +70,26 @@ def recipe(id):
     }
     return render_template('recipe.html', data=result)
 
-# 레시피 작성
+# 레시피 수정
+@app.route('/recipes/edit/<int:id>')
+def edit_recipe(id):
+    recipe = Recipe.query.filter_by(id=id).first()
+
+    result = {
+        'id': recipe.id,
+        'title': recipe.title,
+        'difficulty': recipe.difficulty,
+        'cooking_minutes': recipe.cooking_minutes,
+        'cooking_explanation': recipe.cooking_explanation,
+        'ingredient_price': recipe.ingredient_price,
+        'ingredient_explanation': recipe.ingredient_explanation,
+        'caution': recipe.caution
+    }
+    return render_template('edit.html', data=result)
+
+# 레시피 작성 API
 @app.route('/api/recipes', methods=['POST'])
-def createRecipe():
+def create_recipe_api():
     if request.method == 'POST':
         data = request.get_json(silent=True)
 
@@ -102,9 +119,45 @@ def createRecipe():
 
         return make_response({'success': True, 'message': '요청에 성공했습니다.'})
 
-# 레시피 삭제
+# 레시피 수정 API
+@app.route('/api/recipes/<int:id>', methods=['PUT'])
+def edit_recipe_api(id):
+    if request.method == 'PUT':
+        recipe = Recipe.query.filter_by(id=id).first()
+
+        data = request.get_json(silent=True)
+        password = data.get('password')
+
+        print(recipe.password, password)
+
+        if recipe.password != password:
+            return make_response({'success': False, 'message': '요청에 실패했습니다.'})
+        
+        title = data.get('title')
+        difficulty = int(data.get('difficulty'))
+        password = data.get('password')
+        cooking_minutes = int(data.get('cookingMinutes'))
+        cooking_explanation = data.get('cookingExplanation')
+        ingredient_price = int(data.get('ingredientPrice'))
+        ingredient_explanation = data.get('ingredientExplanation')
+        caution = data.get('caution')
+
+        recipe.title = title
+        recipe.difficulty = difficulty
+        recipe.cooking_minutes = cooking_minutes
+        recipe.cooking_explanation = cooking_explanation
+        recipe.ingredient_price = ingredient_price
+        recipe.ingredient_explanation = ingredient_explanation
+        recipe.caution = caution
+
+        db.session.add(recipe)
+        db.session.commit()
+
+    return make_response({'success': True, 'message': '요청에 성공했습니다.'})
+
+# 레시피 삭제 API
 @app.route('/api/recipes/<int:id>', methods=['DELETE'])
-def deleteRecipe(id):
+def delete_recipe_api(id):
     if request.method == 'DELETE':
         recipe = Recipe.query.filter_by(id=id).first()
 
@@ -121,9 +174,9 @@ def deleteRecipe(id):
 
     return make_response({'success': True, 'message': '요청에 성공했습니다.'})
 
-# 레시피 좋아요
+# 레시피 좋아요 API
 @app.route('/api/recipes/<int:id>/likes', methods=['PUT'])
-def likes(id):
+def likes_api(id):
     recipe = Recipe.query.filter_by(id=id).first()
 
     recipe.likes += 1;

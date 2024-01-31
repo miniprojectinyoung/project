@@ -142,8 +142,8 @@
                 <a href="/">항해 요리사</a>
             </h1>
             <div class="btn-box">
-                <a href="#" role="button" onclick="editRecipe({{ data.id }})">수정</a>
-                <a href="#" role="button" onclick="clickDeleteRecipe({{ data.id }})">삭제</a>
+                <a href="#" role="button" onclick="clickEditRecipe({{ data.id }})">수정하기</a>
+                <a href="#" role="button" onclick="clickDeleteRecipe({{ data.id }})">삭제하기</a>
             </div>
         </header>
 
@@ -199,13 +199,23 @@
     </div>
 
     <script>
+        // 수정
+        function clickEditRecipe(id) {
+            event.preventDefault();
+
+            window.location.href = `/recipes/edit/${id}`;
+        }
+
         // 삭제
         function clickDeleteRecipe(id) {
+            event.preventDefault();
+
             const password = prompt('비밀번호를 입력해주세요.');
 
             deleteRecipe(id, password);
         }
 
+        // 삭제 API
         async function deleteRecipe(id, password) {
             try {
                 const response = await fetch(`http://127.0.0.1:5000/api/recipes/${id}`, {
