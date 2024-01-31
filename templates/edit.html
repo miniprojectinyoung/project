@@ -136,8 +136,10 @@
 
         <section>
             <div class="recipe-header">
-                <input type="text" placeholder="레시피 제목을 입력해주세요" name="title" id="title" value="{{ data.title }}" required>
-                <input type="text" placeholder="예상 난이도를 입력해주세요" name="difficulty" id="difficulty" value="{{ data.difficulty }}" required>
+                <input type="text" placeholder="레시피 제목을 입력해주세요" name="title" id="title" value="{{ data.title }}"
+                    required>
+                <input type="text" placeholder="예상 난이도를 입력해주세요" name="difficulty" id="difficulty"
+                    value="{{ data.difficulty }}" required>
                 <input type="password" placeholder="비밀번호를 입력해주세요" name="password" id="password" required>
             </div>
 
@@ -173,7 +175,8 @@
                     <div class="recipe-card__inner">
                         <div class="recipe-explanation">
                             <h2>레시피</h2>
-                            <input type="text" name="caution" id="caution" placeholder="조리시 주의사항을 적어주세요." value="{{ data.caution }}" required>
+                            <input type="text" name="caution" id="caution" placeholder="조리시 주의사항을 적어주세요."
+                                value="{{ data.caution }}" required>
                         </div>
                         <input type="file" class="explanation" name="recipeImage" id="recipeImage">
                     </div>
@@ -185,17 +188,25 @@
     <script>
         async function editRecipe(data) {
             try {
+                const formData = new FormData();
+
+                for (let key in data) {
+                    formData.append(key, data[key]);
+                }
+
+                const fileInput = document.getElementById('recipeImage');
+                if (fileInput.files.length > 0) {
+                    formData.append('recipeImage', fileInput.files[0]);
+                }
+
                 const response = await fetch(`http://127.0.0.1:5000/api/recipes/${data.id}`, {
                     method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data)
+                    body: formData
                 });
 
                 const result = await response.json();
                 if (result.success === false) {
-                    alert('비밀번호가 일치하지 않습니다.');
+                    alert('레시피가 정상적으로 수정되지 않았습니다.');
                     return;
                 }
 

@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, make_response
+from werkzeug.utils import secure_filename
+
 app = Flask(__name__)
 
-# DB 기본 코드
 import os
+import uuid
+
 from flask_sqlalchemy import SQLAlchemy
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -11,6 +14,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] =\
         'sqlite:///' + os.path.join(basedir, 'database.db')
 
 db = SQLAlchemy(app)
+
+# 이미지 확장자
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+app.config['UPLOAD_FOLDER'] = basedir + '/static/upload'
+app.config['MAX_UPLOAD_SIZE'] = 5 * 1024 * 1024 # 5MB
 
 class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -23,13 +31,14 @@ class Recipe(db.Model):
     caution = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     likes = db.Column(db.Integer, nullable=False)
+    image_url = db.Column(db.String(200), nullable=True)
 
 with app.app_context():
     db.create_all()
 
 @app.route('/')
 def home():
-    recipes = Recipe.query.all()
+    recipes = Recipe.query.order_by(Recipe.id.desc()).all()
     recipe_list = []
 
     for recipe in recipes:
@@ -38,6 +47,8 @@ def home():
             'title': recipe.title,
             'cooking_minutes': recipe.cooking_minutes,
             'ingredient_explanation': recipe.ingredient_explanation,
+            'image_url': recipe.image_url,
+            'likes': recipe.likes
         }
         recipe_list.append(recipe_dict)
 
@@ -66,7 +77,8 @@ def recipe(id):
         'ingredient_price': recipe.ingredient_price,
         'ingredient_explanation': recipe.ingredient_explanation,
         'caution': recipe.caution,
-        'likes': recipe.likes
+        'likes': recipe.likes,
+        'image_url': recipe.image_url
     }
     return render_template('recipe.html', data=result)
 
@@ -91,16 +103,23 @@ def edit_recipe(id):
 @app.route('/api/recipes', methods=['POST'])
 def create_recipe_api():
     if request.method == 'POST':
-        data = request.get_json(silent=True)
+        title = request.form.get('title')
+        difficulty = int(request.form.get('difficulty'))
+        password = request.form.get('password')
+        cooking_minutes = int(request.form.get('cookingMinutes'))
+        cooking_explanation = request.form.get('cookingExplanation')
+        ingredient_price = int(request.form.get('ingredientPrice'))
+        ingredient_explanation = request.form.get('ingredientExplanation')
+        caution = request.form.get('caution')
 
-        title = data.get('title')
-        difficulty = int(data.get('difficulty'))
-        password = data.get('password')
-        cooking_minutes = int(data.get('cookingMinutes'))
-        cooking_explanation = data.get('cookingExplanation')
-        ingredient_price = int(data.get('ingredientPrice'))
-        ingredient_explanation = data.get('ingredientExplanation')
-        caution = data.get('caution')
+        # 이미지 업로드
+        file = request.files['recipeImage']
+        if file and (allowed_file(file.content_type) is False or file.content_length > app.config['MAX_UPLOAD_SIZE']):
+            return make_response({'success': False, 'message': '요청에 실패했습니다.'})
+        
+        extension = file.content_type.split('/')[1].lower()
+        filename = str(uuid.uuid4()) + '.' + extension
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         recipe = Recipe(
             title = title,
@@ -111,7 +130,8 @@ def create_recipe_api():
             ingredient_explanation = ingredient_explanation,
             caution = caution,
             password = password,
-            likes = 0
+            likes = 0,
+            image_url = filename
         )
 
         db.session.add(recipe)
@@ -119,28 +139,29 @@ def create_recipe_api():
 
         return make_response({'success': True, 'message': '요청에 성공했습니다.'})
 
+# 이미지 확장자 검사
+def allowed_file(content_type):
+    return content_type.split('/')[1].lower() in ALLOWED_EXTENSIONS
+
 # 레시피 수정 API
 @app.route('/api/recipes/<int:id>', methods=['PUT'])
 def edit_recipe_api(id):
     if request.method == 'PUT':
         recipe = Recipe.query.filter_by(id=id).first()
 
-        data = request.get_json(silent=True)
-        password = data.get('password')
-
-        print(recipe.password, password)
+        password = request.form.get('password')
 
         if recipe.password != password:
             return make_response({'success': False, 'message': '요청에 실패했습니다.'})
         
-        title = data.get('title')
-        difficulty = int(data.get('difficulty'))
-        password = data.get('password')
-        cooking_minutes = int(data.get('cookingMinutes'))
-        cooking_explanation = data.get('cookingExplanation')
-        ingredient_price = int(data.get('ingredientPrice'))
-        ingredient_explanation = data.get('ingredientExplanation')
-        caution = data.get('caution')
+        title = request.form.get('title')
+        difficulty = int(request.form.get('difficulty'))
+        password = request.form.get('password')
+        cooking_minutes = int(request.form.get('cookingMinutes'))
+        cooking_explanation = request.form.get('cookingExplanation')
+        ingredient_price = int(request.form.get('ingredientPrice'))
+        ingredient_explanation = request.form.get('ingredientExplanation')
+        caution = request.form.get('caution')
 
         recipe.title = title
         recipe.difficulty = difficulty
@@ -149,6 +170,19 @@ def edit_recipe_api(id):
         recipe.ingredient_price = ingredient_price
         recipe.ingredient_explanation = ingredient_explanation
         recipe.caution = caution
+
+        # 이미지 업로드
+        if 'recipeImage' in request.files:
+            file = request.files['recipeImage']
+
+            if file and (allowed_file(file.content_type) is False or file.content_length > app.config['MAX_UPLOAD_SIZE']):
+                return make_response({'success': False, 'message': '요청에 실패했습니다.'})
+            
+            extension = file.content_type.split('/')[1].lower()
+            filename = str(uuid.uuid4()) + '.' + extension
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            recipe.image_url = filename
 
         db.session.add(recipe)
         db.session.commit()

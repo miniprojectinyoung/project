@@ -185,16 +185,25 @@
     <script>
         async function createRecipe(data) {
             try {
+                const formData = new FormData();
+
+                for (let key in data) {
+                    formData.append(key, data[key]);
+                }
+
+                const fileInput = document.getElementById('recipeImage');
+                formData.append('recipeImage', fileInput.files[0]);
+
                 const response = await fetch('http://127.0.0.1:5000/api/recipes', {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data)
+                    body: formData
                 });
 
                 const result = await response.json();
-                console.log(result);
+                if (result.success === false) {
+                    alert('레시피가 정상적으로 올라가지 않았습니다.');
+                    return;
+                }
 
                 alert('레시피가 정상적으로 올라갔습니다!');
                 window.location.href = '/';
@@ -253,6 +262,12 @@
             const caution = document.getElementById('caution').value;
             if (!caution) {
                 alert('조리시 주의사항을 입력해주세요.')
+                return
+            }
+
+            const fileInput = document.getElementById('recipeImage');
+            if (fileInput.files.length <= 0) {
+                alert('레시피를 업로드 해주세요.')
                 return
             }
 

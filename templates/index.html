@@ -140,7 +140,7 @@
                 {% for recipe in data.recipes %}
                 <div class="recipe-card">
                     <a href="/recipes/{{ recipe.id }}">
-                        <img src="{{ url_for('static', filename='img/tomato.webp') }}" alt="토마토 이미지">
+                        <img src="{{ url_for('static', filename='upload/{}'.format(recipe.image_url)) }}" alt="레시피 이미지">
                         <div class="recipe-card__info">
                             <h3>{{ recipe.title }}</h3>
                             <div class="cooking-minutes">
@@ -148,6 +148,8 @@
                             </div>
                             <div class="ingredient">
                                 <span>준비재료: </span><span>{{ recipe.ingredient_explanation }}</span>
+                                <br>
+                                <span style="color: red;">❤️ {{ recipe.likes }}</span>
                             </div>
                         </div>
                     </a>
