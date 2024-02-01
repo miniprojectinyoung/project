@@ -156,7 +156,6 @@ def edit_recipe_api(id):
         
         title = request.form.get('title')
         difficulty = int(request.form.get('difficulty'))
-        password = request.form.get('password')
         cooking_minutes = int(request.form.get('cookingMinutes'))
         cooking_explanation = request.form.get('cookingExplanation')
         ingredient_price = int(request.form.get('ingredientPrice'))
