@@ -1,0 +1,249 @@
+* {
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color:#426B1F;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h2 {
+    color:#426B1F;
+    margin-right: 50px;
+}
+
+.btn{
+    width: 120px;
+    height: 48px;
+    background-color: #426B1F;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+header {
+    width: 1000px;
+    height: 100px;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.recipe-header {
+    width: 1000px;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.recipe-card__info {
+    font-size: 30px;
+    margin-right: 40px;
+}
+
+.line {
+    border-top: 1px solid #E6E6E6;
+    width: 1000px;
+    margin: 20px 0px 50px 0px;
+}
+
+.recipe-contents {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.recipe-card {
+    width: calc(25.5% - 7px);
+    aspect-ratio: 6 / 5;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    margin: 0px 10px;
+}
+/* ddd */
+.recipe-card a::after {
+    content: "";
+    display: block;
+    background: rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 7;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.recipe-card:hover a::after {
+    opacity: 1;
+}
+
+
+.recipe-card a {
+    text-decoration: none;
+    color: #333;
+}
+
+
+/* ddd */
+
+.imgBox {
+    width: 100%;
+    height: 100%;
+}
+
+.imgBox img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.recipe-card__info {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 20px;
+    z-index: 3;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    color:white
+}
+
+/* .imgBox {
+    width: 100%;
+    height: 100%;
+}
+
+.imgBox img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.textBox {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 20px;
+    z-index: 4;
+} */
+
+.recipe-card__info p {
+    color: white;
+    margin: 5px 0 0;
+}
+
+.textBox__name {
+    font-size: 30px;
+    font-weight: 700;
+    opacity:0;
+}
+
+.cooking-minutes {
+    font-size: 20px;
+    font-weight: 500;
+    opacity:0;
+}
+
+.ingredient {
+    font-size: 19px;
+    font-weight: 300;
+    opacity:0;
+}
+
+.recipe-card:after {
+    content: "";
+    display: block;
+    background: rgba(0,0,0,0.2);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    opacity:0;
+}
+
+.recipe-card:hover:after {
+    opacity: 1;
+}
+
+.recipe-card:hover .imgBox img {
+    transform: scale(1.1);
+    filter: blur(1px);
+}
+
+.recipe-card:hover .textBox__name {
+    opacity: 1;
+}
+
+.recipe-card:hover .cooking-minutes {
+    opacity: 1;
+}
+
+.recipe-card:hover .ingredient {
+    opacity: 1;
+}
+
+.recipe-card:after,
+.recipe-card .itemBox img,
+.recipe-card:hover .textBox__name {
+    transition: all 0.4s ease-in-out
+}
+
+.recipe-card:hover p {
+    transform: translateY(-50px);
+}
+
+.recipe-card:hover .cooking-minutes {
+    transition: all 0.4s ease-in-out 0.2s;
+}
+
+.recipe-card:hover .ingredient {
+    transition: all 0.4s ease-in-out 0.3s;
+}
+
+/* 여유있을때 breakPoint 작성하기 */
+/* @media screen and (max-width:0 ~ 767px){
+    
+} */
