@@ -22,7 +22,8 @@
 - 레시피 좋아요 누르기
 
 ## 🖼️ ERD
-<img width="373" alt="스크린샷 2024-02-02 오전 10 29 45" src="https://github.com/miniprojectinyoung/project/assets/150704638/4a936834-73dd-4d97-adda-7bfebaca5c3d">
+
+<img width="360" alt="스크린샷 2024-02-02 오후 5 27 25" src="https://github.com/miniprojectinyoung/project/assets/150704638/b31031f4-7364-4be3-b292-b4aecb17b3a3">
 
 ## 📄 API 명세서
 
@@ -90,6 +91,7 @@
 | `caution`               | `String`  | 주의점         |
 | `likes`                 | `Integer` | 좋아요 수      |
 | `imageUrl`              | `String`  | 이미지 URL     |
+| `recipeExplanation`     | `String`  | 레시피 설명    |
 
 #### Example response
 
@@ -104,7 +106,8 @@
     "ingredientExplanation": "파스타면, 토마토 500g, 바질페스토",
     "caution": "불 사용할때 주의해주세요!",
     "likes": 100,
-    "imageUrl": "test.png"
+    "imageUrl": "test.png",
+    "recipeExplanation": "1. 토마토를 썰어줍니다."
 }
 ```
 
@@ -125,6 +128,7 @@
 | `ingredientExplanation` | `String`  | 재료 설명      |
 | `caution`               | `String`  | 주의점         |
 | `image`                 | `String`  | 이미지         |
+| `recipeExplanation`     | `String`  | 레시피 설명    |
 
 #### Example request
 
@@ -140,7 +144,8 @@ POST /api/recipes
     "ingredientPrice": 27000,
     "ingredientExplanation": "파스타면, 토마토 500g, 바질페스토",
     "caution": "불 사용할때 주의해주세요!",
-    "image": "이미지"
+    "image": "이미지",
+    "recipeExplanation": "1. 토마토를 썰어줍니다."
 }
 ```
 
@@ -177,6 +182,7 @@ POST /api/recipes
 | `ingredientExplanation` | `String`  | 재료 설명      |
 | `caution`               | `String`  | 주의점         |
 | `image`                 | `String`  | 이미지         |
+| `recipeExplanation`     | `String`  | 레시피 설명    |
 
 #### Example request
 
@@ -192,7 +198,8 @@ PUT /api/recipes/{id}
     "ingredientPrice": 27000,
     "ingredientExplanation": "파스타면, 토마토 500g, 바질페스토",
     "caution": "불 사용할때 주의해주세요!",
-    "image": "이미지"
+    "image": "이미지",
+    "recipeExplanation": "1. 토마토를 썰어줍니다."
 }
 ```
 
