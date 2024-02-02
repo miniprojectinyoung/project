@@ -22,6 +22,7 @@ section {
 
 h2 {
     color:#426B1F;
+    margin-right: 50px;
 }
 
 .btn{
@@ -78,7 +79,7 @@ header {
 }
 
 .recipe-card {
-    width: calc(30% - 7px);
+    width: calc(25.5% - 7px);
     aspect-ratio: 6 / 5;
     position: relative;
     overflow: hidden;
@@ -242,3 +243,7 @@ header {
     transition: all 0.4s ease-in-out 0.3s;
 }
 
+/* 여유있을때 breakPoint 작성하기 */
+/* @media screen and (max-width:0 ~ 767px){
+    
+} */
