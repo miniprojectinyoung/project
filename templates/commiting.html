@@ -77,7 +77,7 @@
                 const fileInput = document.getElementById('recipeImage');
                 formData.append('recipeImage', fileInput.files[0]);
 
-                const response = await fetch('http://127.0.0.1:5000/api/recipes', {
+                const response = await fetch('/api/recipes', {
                     method: "POST",
                     body: formData
                 });
