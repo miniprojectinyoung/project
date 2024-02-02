@@ -108,7 +108,7 @@
         // 삭제 API
         async function deleteRecipe(id, password) {
             try {
-                const response = await fetch(`http://127.0.0.1:5000/api/recipes/${id}`, {
+                const response = await fetch(`/api/recipes/${id}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
@@ -134,7 +134,7 @@
         // 좋아요
         async function clickLike(id) {
             try {
-                const response = await fetch(`http://127.0.0.1:5000/api/recipes/${id}/likes`, {
+                const response = await fetch(`/api/recipes/${id}/likes`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",

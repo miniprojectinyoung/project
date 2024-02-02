@@ -22,14 +22,14 @@
             <div class="recipe-header">
                 <input type="text" placeholder="레시피 제목을 입력해주세요" name="title" id="title" required>
                 <input type="password" placeholder="비밀번호를 입력해주세요" name="password" id="password" required>
-                <div id="difficulty" name="difficulty" required>
+                <div>
                     예상 난이도를 입력해주세요.
-                    <select class="score">
-                        <option>5</option>
-                        <option>4</option>
-                        <option>3</option>
-                        <option>2</option>
-                        <option>1</option>
+                    <select class="score" id="difficulty">
+                        <option value="5">5</option>
+                        <option value="4">4</option>
+                        <option value="3">3</option>
+                        <option value="2">2</option>
+                        <option value="1">1</option>
                     </select>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                 const fileInput = document.getElementById('recipeImage');
                 formData.append('recipeImage', fileInput.files[0]);
 
-                const response = await fetch('http://127.0.0.1:5000/api/recipes', {
+                const response = await fetch('/api/recipes', {
                     method: "POST",
                     body: formData
                 });
