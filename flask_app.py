@@ -28,6 +28,7 @@ class Recipe(db.Model):
     cooking_explanation = db.Column(db.String(1000), nullable=False)
     ingredient_price = db.Column(db.Integer, nullable=False)
     ingredient_explanation = db.Column(db.String(1000), nullable=False)
+    recipe_explanation = db.Column(db.String(1000), nullable=False)
     caution = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     likes = db.Column(db.Integer, nullable=False)
@@ -76,6 +77,7 @@ def recipe(id):
         'cooking_explanation': recipe.cooking_explanation,
         'ingredient_price': recipe.ingredient_price,
         'ingredient_explanation': recipe.ingredient_explanation,
+        'recipe_explanation': recipe.recipe_explanation,
         'caution': recipe.caution,
         'likes': recipe.likes,
         'image_url': recipe.image_url
@@ -95,6 +97,7 @@ def edit_recipe(id):
         'cooking_explanation': recipe.cooking_explanation,
         'ingredient_price': recipe.ingredient_price,
         'ingredient_explanation': recipe.ingredient_explanation,
+        'recipe_explanation': recipe.recipe_explanation,
         'caution': recipe.caution
     }
     return render_template('edit.html', data=result)
@@ -110,6 +113,7 @@ def create_recipe_api():
         cooking_explanation = request.form.get('cookingExplanation')
         ingredient_price = int(request.form.get('ingredientPrice'))
         ingredient_explanation = request.form.get('ingredientExplanation')
+        recipe_explanation = request.form.get('recipeExplanation')
         caution = request.form.get('caution')
 
         # 이미지 업로드
@@ -128,6 +132,7 @@ def create_recipe_api():
             cooking_explanation = cooking_explanation,
             ingredient_price = ingredient_price,
             ingredient_explanation = ingredient_explanation,
+            recipe_explanation = recipe_explanation,
             caution = caution,
             password = password,
             likes = 0,
@@ -160,6 +165,7 @@ def edit_recipe_api(id):
         cooking_explanation = request.form.get('cookingExplanation')
         ingredient_price = int(request.form.get('ingredientPrice'))
         ingredient_explanation = request.form.get('ingredientExplanation')
+        recipe_explanation = request.form.get('recipeExplanation')
         caution = request.form.get('caution')
 
         recipe.title = title
@@ -168,6 +174,7 @@ def edit_recipe_api(id):
         recipe.cooking_explanation = cooking_explanation
         recipe.ingredient_price = ingredient_price
         recipe.ingredient_explanation = ingredient_explanation
+        recipe.recipe_explanation = recipe_explanation
         recipe.caution = caution
 
         # 이미지 업로드

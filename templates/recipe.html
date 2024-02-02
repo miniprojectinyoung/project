@@ -64,6 +64,7 @@
                         <div class="recipe-explanation">
                             <div>
                                 <h2>레시피</h2>
+                                <p class="sub">{{ data.recipe_explanation }}</p>
                                 <p class="sub">사진을 클릭해주세요</p>
                                 <img src="{{ url_for('static', filename='upload/{}'.format(data.image_url)) }}"
                                     alt="레시피 이미지" class="thumb" id="myImg">

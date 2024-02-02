@@ -76,6 +76,9 @@
                             <input type="text" name="caution" id="caution" class="form-control"
                                 placeholder="조리시 주의사항을 적어주세요." value="{{ data.caution }}" required>
                         </div>
+                        <input type="text" class="form-control explanation" name="recipeExplanation"
+                            id="recipeExplanation" placeholder="레시피를 작성해주세요" value="{{ data.recipe_explanation }}"
+                            required>
                         <input type="file" class="form-control explanation" name="recipeImage" id="recipeImage">
                     </div>
                 </div>
@@ -162,6 +165,12 @@
                 return
             }
 
+            const recipeExplanation = document.getElementById('recipeExplanation').value;
+            if (!recipeExplanation) {
+                alert('레시피를 입력해주세요.')
+                return
+            }
+
             const caution = document.getElementById('caution').value;
             if (!caution) {
                 alert('조리시 주의사항을 입력해주세요.')
@@ -178,6 +187,7 @@
                 cookingExplanation: cookingExplanation,
                 ingredientPrice: ingredientPrice,
                 ingredientExplanation: ingredientExplanation,
+                recipeExplanation: recipeExplanation,
                 caution: caution
             };
 

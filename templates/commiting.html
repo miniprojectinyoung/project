@@ -68,6 +68,8 @@
                             <h2>레시피</h2>
                             <input type="text" name="caution" id="caution" placeholder="조리시 주의사항을 적어주세요." required>
                         </div>
+                        <input type="text" class="explanation" name="recipeExplanation" id="recipeExplanation"
+                            placeholder="레시피를 작성해주세요" required>
                         <input type="file" class="explanation" name="recipeImage" id="recipeImage">
                     </div>
                 </div>
@@ -158,6 +160,12 @@
                 return
             }
 
+            const recipeExplanation = document.getElementById('recipeExplanation').value;
+            if (!recipeExplanation) {
+                alert('레시피를 입력해주세요.')
+                return
+            }
+
             const fileInput = document.getElementById('recipeImage');
             if (fileInput.files.length <= 0) {
                 alert('레시피를 업로드 해주세요.')
@@ -173,6 +181,7 @@
                 cookingExplanation: cookingExplanation,
                 ingredientPrice: ingredientPrice,
                 ingredientExplanation: ingredientExplanation,
+                recipeExplanation: recipeExplanation,
                 caution: caution
             };
 
